@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "react-native-paper";
 
 import { apiFetch } from "../services/api";
+import { POSTS } from "../services/api-constants";
 import IgLogo from "../components/IgLogo";
 import Post from "../components/Post";
 import ShimmerHome from "../components/ShimmerHome";
@@ -16,7 +17,7 @@ export default function HomeScreen() {
 
   const { data, isLoading, isRefetching, refetch } = useQuery<InstagramPost[]>({
     queryFn: () => apiFetch("GET", "posts"),
-    queryKey: ["posts"],
+    queryKey: [POSTS],
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });

@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "react-native-paper";
 
+import { POSTS } from "../services/api-constants";
 import IgLogo from "./IgLogo";
 import ShimmerPost from "./ShimmerPost";
 
@@ -13,15 +14,12 @@ const ShimmerHome = () => {
   const queryClient = useQueryClient();
 
   const onRefresh = useCallback(() => {
-    queryClient.refetchQueries({ queryKey: ["posts"] });
+    queryClient.refetchQueries({ queryKey: [POSTS] });
   }, []);
 
-  const isRefreshing = Boolean(queryClient.isFetching({ queryKey: ["posts"] }));
+  const isRefreshing = Boolean(queryClient.isFetching({ queryKey: [POSTS] }));
 
-  const mockData: number[] = Array.from(
-    { length: 10 },
-    (_, index) => index + 1
-  );
+  const mockData = Array.from({ length: 10 }, (_, index) => index + 1);
 
   const renderMockItem: ListRenderItem<unknown> | null | undefined = () => (
     <ShimmerPost
