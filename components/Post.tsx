@@ -9,6 +9,7 @@ import {
 import { Avatar, Card, IconButton, Text, useTheme } from "react-native-paper";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 import type { InstagramPost } from "../_types";
 
@@ -28,10 +29,15 @@ const Post: FC<PostProps> = ({
 }) => {
   const colorScheme = useColorScheme();
   const theme = useTheme();
+  // •
 
   const darkBorderColor = "#262626";
   const lightBorderColor = "#dbdbdb";
   const placeholderColor = "#f5f5f5";
+
+  const bookmarkIcon = saved ? "bookmark" : "bookmark-o";
+  const heartColor = liked ? theme.colors.error : theme.colors.onSurface;
+  const heartIcon = liked ? "heart" : "heart-o";
 
   return (
     <Card
@@ -50,7 +56,7 @@ const Post: FC<PostProps> = ({
         right={(props) => (
           <IconButton {...props} icon="dots-horizontal" onPress={() => {}} />
         )}
-        subtitle="Card Subtitle"
+        subtitle={location}
         subtitleStyle={styles.subtitleStyle}
         title={name}
         titleStyle={styles.titleStyle}
@@ -64,7 +70,7 @@ const Post: FC<PostProps> = ({
         <View style={styles.mainButtonContainer}>
           <View style={styles.shareButtonContainer}>
             <TouchableOpacity style={styles.postButton}>
-              <Feather name="heart" size={24} color={theme.colors.onSurface} />
+              <FontAwesome color={heartColor} name={heartIcon} size={24} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.postButton}>
               <FontAwesome5
@@ -78,11 +84,15 @@ const Post: FC<PostProps> = ({
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.postButton}>
-            <Feather name="bookmark" size={24} color={theme.colors.onSurface} />
+            <FontAwesome
+              color={theme.colors.onSurface}
+              name={bookmarkIcon}
+              size={24}
+            />
           </TouchableOpacity>
         </View>
         <Text style={[styles.titleStyle, { marginBottom: 8 }]}>
-          {likes} Me gusta
+          {likes.toLocaleString("es")} Me gusta
         </Text>
         <Text
           numberOfLines={1}
@@ -102,7 +112,7 @@ const Post: FC<PostProps> = ({
             { color: placeholderColor, fontWeight: 600 },
           ]}
         >
-          Ver los {comments} comentarios
+          Ver los {comments.toLocaleString("es")} comentarios
         </Text>
         <TextInput
           placeholder="Añade un comentario..."
