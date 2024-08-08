@@ -1,5 +1,5 @@
 import { useColorScheme } from "react-native";
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 
 import theme from "../theme";
@@ -14,7 +14,7 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <Slot />
+      <Stack />
     </PaperProvider>
   );
 }
