@@ -1,52 +1,66 @@
-import { View, StyleSheet, useColorScheme } from "react-native";
-import { Avatar, Card, IconButton, Text, useTheme } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { Stack } from "expo-router";
+import { useTheme } from "react-native-paper";
+
+import IgLogo from "../components/IgLogo";
+import Post from "../components/Post";
+
+const DATA = [
+  {
+    title: "First Item",
+  },
+  {
+    title: "Second Item",
+  },
+  {
+    title: "Third Item",
+  },
+  {
+    title: "Fourth Item",
+  },
+  {
+    title: "Fifth Item",
+  },
+  {
+    title: "Sixth Item",
+  },
+  {
+    title: "Seventh Item",
+  },
+];
 
 export default function HomeScreen() {
   const theme = useTheme();
-  // const colorScheme = useColorScheme();
-
-  // #dbdbdb lightBorderColor.
-  // #262626 darkBorderColor.
 
   return (
-    <View style={styles.container}>
-      <Card
-        elevation={0}
-        style={{
-          backgroundColor: theme.colors.surface,
-          borderBottomColor: "#262626",
-          borderBottomWidth: 1,
-          borderRadius: 0,
-          shadowColor: "transparent",
-          width: "100%",
+    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+      <Stack.Screen
+        options={{
+          headerStyle: { backgroundColor: theme.colors.surface },
+          headerTitle: () => <IgLogo color={theme.colors.onSurface} />,
         }}
-      >
-        <Card.Title
-          left={(props) => <Avatar.Icon {...props} icon="folder" />}
-          right={(props) => (
-            <IconButton {...props} icon="dots-vertical" onPress={() => {}} />
-          )}
-          subtitle="Card Subtitle"
-          title="Card Title"
+      />
+      <View style={{ flex: 1, height: "100%", width: "100%" }}>
+        <FlashList
+          data={DATA}
+          estimatedItemSize={564}
+          renderItem={({ item }) => <Post />}
+          style={{ flex: 1 }}
         />
-        <Card.Content style={{ width: "100%" }}>
-          <Card.Cover
-            resizeMode="contain"
-            source={{ uri: "https://picsum.photos/700" }}
-            style={{ height: 468, backgroundColor: "black" }}
-          />
-          <Text variant="titleLarge">Card title</Text>
-          <Text variant="bodyMedium">Card content</Text>
-        </Card.Content>
-      </Card>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+  },
+  image: {
+    width: 50,
+    height: 50,
   },
 });
