@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -9,7 +10,22 @@ import { Avatar, Card, IconButton, Text, useTheme } from "react-native-paper";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
-const Post = () => {
+import type { InstagramPost } from "../_types";
+
+type PostProps = InstagramPost;
+
+const Post: FC<PostProps> = ({
+  avatar,
+  comments,
+  createdAt,
+  description,
+  image,
+  liked,
+  likes,
+  location,
+  name,
+  saved,
+}) => {
   const colorScheme = useColorScheme();
   const theme = useTheme();
 
@@ -30,19 +46,19 @@ const Post = () => {
       ]}
     >
       <Card.Title
-        left={(props) => <Avatar.Icon {...props} icon="folder" />}
+        left={(props) => <Avatar.Image source={{ uri: avatar }} {...props} />}
         right={(props) => (
           <IconButton {...props} icon="dots-horizontal" onPress={() => {}} />
         )}
         subtitle="Card Subtitle"
         subtitleStyle={styles.subtitleStyle}
-        title="Card Title"
+        title={name}
         titleStyle={styles.titleStyle}
       />
       <Card.Content style={{ width: "100%" }}>
         <Card.Cover
           resizeMode="contain"
-          source={{ uri: "https://picsum.photos/700" }}
+          source={{ uri: image }}
           style={{ backgroundColor: "black", height: 468 }}
         />
         <View style={styles.mainButtonContainer}>
@@ -65,16 +81,17 @@ const Post = () => {
             <Feather name="bookmark" size={24} color={theme.colors.onSurface} />
           </TouchableOpacity>
         </View>
-        <Text style={[styles.titleStyle, { marginBottom: 8 }]}>7 Me gusta</Text>
+        <Text style={[styles.titleStyle, { marginBottom: 8 }]}>
+          {likes} Me gusta
+        </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={[styles.titleStyle, { marginBottom: 8 }]}
         >
-          beeratbens{" "}
+          {name}{" "}
           <Text style={[styles.titleStyle, { fontWeight: 600 }]}>
-            something something something something something something
-            something something something something something
+            {description}
           </Text>
         </Text>
         <Text
@@ -85,7 +102,7 @@ const Post = () => {
             { color: placeholderColor, fontWeight: 600 },
           ]}
         >
-          Ver los comentarios
+          Ver los {comments} comentarios
         </Text>
         <TextInput
           placeholder="Añade un comentario..."
