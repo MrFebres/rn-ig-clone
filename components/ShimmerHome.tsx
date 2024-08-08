@@ -2,35 +2,31 @@ import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { RefreshControl, StyleSheet, View } from "react-native";
 import { Stack } from "expo-router";
 import { useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "react-native-paper";
 
-import { apiFetch } from "../services/api";
 import { POSTS } from "../services/api-constants";
-import IgLogo from "../components/IgLogo";
-import Post from "../components/Post";
-import ShimmerHome from "../components/ShimmerHome";
-import type { InstagramPost } from "../_types";
+import IgLogo from "./IgLogo";
+import ShimmerPost from "./ShimmerPost";
 
-export default function HomeScreen() {
+const ShimmerHome = () => {
   const theme = useTheme();
-
-  const { data, isLoading, isRefetching, refetch } = useQuery<InstagramPost[]>({
-    queryFn: () => apiFetch("GET", "posts"),
-    queryKey: [POSTS],
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  const queryClient = useQueryClient();
 
   const onRefresh = useCallback(() => {
-    refetch();
+    queryClient.refetchQueries({ queryKey: [POSTS] });
   }, []);
 
-  const renderItem: ListRenderItem<InstagramPost> | null | undefined = ({
-    item,
-  }) => <Post {...item} />;
+  const isRefreshing = Boolean(queryClient.isFetching({ queryKey: [POSTS] }));
 
-  if (isLoading || isRefetching) return <ShimmerHome />;
+  const mockData = Array.from({ length: 10 }, (_, index) => index + 1);
+
+  const renderMockItem: ListRenderItem<unknown> | null | undefined = () => (
+    <ShimmerPost
+      backgroundColor={theme.colors.onSurfaceVariant}
+      foregroundColor={theme.colors.onSurface}
+    />
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
@@ -42,18 +38,18 @@ export default function HomeScreen() {
       />
       <View style={{ flex: 1, height: "100%", width: "100%" }}>
         <FlashList
-          data={data}
+          data={mockData}
           estimatedItemSize={564}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => String(item)}
           refreshControl={
-            <RefreshControl onRefresh={onRefresh} refreshing={isRefetching} />
+            <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
           }
-          renderItem={renderItem}
+          renderItem={renderMockItem}
         />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -66,3 +62,5 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
+
+export default ShimmerHome;
