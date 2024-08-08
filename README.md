@@ -11,6 +11,8 @@ cd ccu-rn-trial
 
 This project has been set up with `Expo SDK`, so it is required to have `Expo CLI` and either install or add all dependencies with `Expo CLI`, so to avoid any issue with project dependencies, add them by using the following command:
 
+- [Expo SDK Setup](https://docs.expo.dev/get-started/create-a-project/)
+
 First install expo & all dependencies
 
 ```sh
