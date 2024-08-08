@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -7,15 +8,39 @@ import {
 } from "react-native";
 import { Avatar, Card, IconButton, Text, useTheme } from "react-native-paper";
 import Feather from "@expo/vector-icons/Feather";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
-const Post = () => {
+import dateFormatter from "../utils/dateFormatter";
+import type { InstagramPost } from "../_types";
+
+type PostProps = InstagramPost;
+
+const Post: FC<PostProps> = ({
+  avatar,
+  comments,
+  createdAt,
+  description,
+  image,
+  liked,
+  likes,
+  location,
+  name,
+  saved,
+}) => {
   const colorScheme = useColorScheme();
   const theme = useTheme();
+
+  const date = dateFormatter(createdAt.toString());
+  const [quantity, timeUnit] = date.split(" ");
 
   const darkBorderColor = "#262626";
   const lightBorderColor = "#dbdbdb";
   const placeholderColor = "#f5f5f5";
+
+  const bookmarkIcon = saved ? "bookmark" : "bookmark-o";
+  const heartColor = liked ? theme.colors.error : theme.colors.onSurface;
+  const heartIcon = liked ? "heart" : "heart-o";
 
   return (
     <Card
@@ -30,25 +55,25 @@ const Post = () => {
       ]}
     >
       <Card.Title
-        left={(props) => <Avatar.Icon {...props} icon="folder" />}
+        left={(props) => <Avatar.Image source={{ uri: avatar }} {...props} />}
         right={(props) => (
           <IconButton {...props} icon="dots-horizontal" onPress={() => {}} />
         )}
-        subtitle="Card Subtitle"
+        subtitle={location}
         subtitleStyle={styles.subtitleStyle}
-        title="Card Title"
+        title={`${name} • ${quantity} ${timeUnit[0]}`}
         titleStyle={styles.titleStyle}
       />
       <Card.Content style={{ width: "100%" }}>
         <Card.Cover
           resizeMode="contain"
-          source={{ uri: "https://picsum.photos/700" }}
+          source={{ uri: image }}
           style={{ backgroundColor: "black", height: 468 }}
         />
         <View style={styles.mainButtonContainer}>
           <View style={styles.shareButtonContainer}>
             <TouchableOpacity style={styles.postButton}>
-              <Feather name="heart" size={24} color={theme.colors.onSurface} />
+              <FontAwesome color={heartColor} name={heartIcon} size={24} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.postButton}>
               <FontAwesome5
@@ -62,19 +87,24 @@ const Post = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.postButton}>
-            <Feather name="bookmark" size={24} color={theme.colors.onSurface} />
+            <FontAwesome
+              color={theme.colors.onSurface}
+              name={bookmarkIcon}
+              size={24}
+            />
           </TouchableOpacity>
         </View>
-        <Text style={[styles.titleStyle, { marginBottom: 8 }]}>7 Me gusta</Text>
+        <Text style={[styles.titleStyle, { marginBottom: 8 }]}>
+          {likes.toLocaleString("es")} Me gusta
+        </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={[styles.titleStyle, { marginBottom: 8 }]}
         >
-          beeratbens{" "}
+          {name}{" "}
           <Text style={[styles.titleStyle, { fontWeight: 600 }]}>
-            something something something something something something
-            something something something something something
+            {description}
           </Text>
         </Text>
         <Text
@@ -85,7 +115,7 @@ const Post = () => {
             { color: placeholderColor, fontWeight: 600 },
           ]}
         >
-          Ver los comentarios
+          Ver los {comments.toLocaleString("es")} comentarios
         </Text>
         <TextInput
           placeholder="Añade un comentario..."

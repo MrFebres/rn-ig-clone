@@ -1,37 +1,30 @@
-import { StyleSheet, View } from "react-native";
-import { FlashList } from "@shopify/flash-list";
+import { ActivityIndicator, useTheme } from "react-native-paper";
+import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { Stack } from "expo-router";
-import { useTheme } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
 
+import { apiFetch } from "../services/api";
 import IgLogo from "../components/IgLogo";
 import Post from "../components/Post";
-
-const DATA = [
-  {
-    title: "First Item",
-  },
-  {
-    title: "Second Item",
-  },
-  {
-    title: "Third Item",
-  },
-  {
-    title: "Fourth Item",
-  },
-  {
-    title: "Fifth Item",
-  },
-  {
-    title: "Sixth Item",
-  },
-  {
-    title: "Seventh Item",
-  },
-];
+import type { InstagramPost } from "../_types";
 
 export default function HomeScreen() {
   const theme = useTheme();
+
+  const { data, isLoading } = useQuery<InstagramPost[]>({
+    queryFn: () => apiFetch("GET", "posts"),
+    queryKey: ["posts"],
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  });
+
+  const renderItem: ListRenderItem<InstagramPost> | null | undefined = ({
+    item,
+  }) => <Post {...item} />;
+
+  if (isLoading) return <ActivityIndicator />;
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
@@ -43,10 +36,10 @@ export default function HomeScreen() {
       />
       <View style={{ flex: 1, height: "100%", width: "100%" }}>
         <FlashList
-          data={DATA}
+          data={data}
           estimatedItemSize={564}
-          renderItem={({ item }) => <Post />}
-          style={{ flex: 1 }}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
         />
       </View>
     </View>
