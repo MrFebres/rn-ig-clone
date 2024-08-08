@@ -1,12 +1,21 @@
-import { View, StyleSheet, useColorScheme } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { Avatar, Card, IconButton, Text, useTheme } from "react-native-paper";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const Post = () => {
-  const theme = useTheme();
   const colorScheme = useColorScheme();
+  const theme = useTheme();
 
-  const lightBorderColor = "#dbdbdb";
   const darkBorderColor = "#262626";
+  const lightBorderColor = "#dbdbdb";
+  const placeholderColor = "#f5f5f5";
 
   return (
     <Card
@@ -34,10 +43,54 @@ const Post = () => {
         <Card.Cover
           resizeMode="contain"
           source={{ uri: "https://picsum.photos/700" }}
-          style={{ height: 468, backgroundColor: "black" }}
+          style={{ backgroundColor: "black", height: 468 }}
         />
-        <Text variant="titleLarge">Card title</Text>
-        <Text variant="bodyMedium">Card content</Text>
+        <View style={styles.mainButtonContainer}>
+          <View style={styles.shareButtonContainer}>
+            <TouchableOpacity style={styles.postButton}>
+              <Feather name="heart" size={24} color={theme.colors.onSurface} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.postButton}>
+              <FontAwesome5
+                name="comment"
+                size={24}
+                color={theme.colors.onSurface}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.postButton}>
+              <Feather name="send" size={24} color={theme.colors.onSurface} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.postButton}>
+            <Feather name="bookmark" size={24} color={theme.colors.onSurface} />
+          </TouchableOpacity>
+        </View>
+        <Text style={[styles.titleStyle, { marginBottom: 8 }]}>7 Me gusta</Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={[styles.titleStyle, { marginBottom: 8 }]}
+        >
+          beeratbens{" "}
+          <Text style={[styles.titleStyle, { fontWeight: 600 }]}>
+            something something something something something something
+            something something something something something
+          </Text>
+        </Text>
+        <Text
+          ellipsizeMode="tail"
+          numberOfLines={1}
+          style={[
+            styles.titleStyle,
+            { color: placeholderColor, fontWeight: 600 },
+          ]}
+        >
+          Ver los comentarios
+        </Text>
+        <TextInput
+          placeholder="Añade un comentario..."
+          placeholderTextColor={placeholderColor}
+        />
       </Card.Content>
     </Card>
   );
@@ -50,18 +103,31 @@ const styles = StyleSheet.create({
     shadowColor: "transparent",
     width: "100%",
   },
-  titleStyle: {
-    fontSize: 14,
-    fontWeight: 600,
-    lineHeight: 18,
-    margin: 0,
-    textAlignVertical: "center",
+  mainButtonContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 4,
+    width: "100%",
+  },
+  postButton: { padding: 8 },
+  shareButtonContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    marginVertical: 4,
   },
   subtitleStyle: {
     fontSize: 12,
     fontWeight: 600,
     lineHeight: 16,
     margin: 0,
+  },
+  titleStyle: {
+    fontSize: 14,
+    fontWeight: 700,
+    lineHeight: 18,
+    margin: 0,
+    textAlignVertical: "center",
   },
 });
 
