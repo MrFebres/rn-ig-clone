@@ -1,30 +1,25 @@
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { Stack } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "react-native-paper";
 
-import { apiFetch } from "../services/api";
-import IgLogo from "../components/IgLogo";
-import Post from "../components/Post";
-import ShimmerHome from "../components/ShimmerHome";
-import type { InstagramPost } from "../_types";
+import IgLogo from "./IgLogo";
+import ShimmerPost from "./ShimmerPost";
 
-export default function HomeScreen() {
+const ShimmerHome = () => {
   const theme = useTheme();
 
-  const { data, isLoading } = useQuery<InstagramPost[]>({
-    queryFn: () => apiFetch("GET", "posts"),
-    queryKey: ["posts"],
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  const mockData: number[] = Array.from(
+    { length: 10 },
+    (_, index) => index + 1
+  );
 
-  const renderItem: ListRenderItem<InstagramPost> | null | undefined = ({
-    item,
-  }) => <Post {...item} />;
-
-  if (isLoading) return <ShimmerHome />;
+  const renderMockItem: ListRenderItem<unknown> | null | undefined = () => (
+    <ShimmerPost
+      backgroundColor={theme.colors.onSurfaceVariant}
+      foregroundColor={theme.colors.onSurface}
+    />
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
@@ -36,15 +31,15 @@ export default function HomeScreen() {
       />
       <View style={{ flex: 1, height: "100%", width: "100%" }}>
         <FlashList
-          data={data}
+          data={mockData}
           estimatedItemSize={564}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
+          keyExtractor={(item) => String(item)}
+          renderItem={renderMockItem}
         />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -57,3 +52,5 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
+
+export default ShimmerHome;
