@@ -8,9 +8,10 @@ import {
 } from "react-native";
 import { Avatar, Card, IconButton, Text, useTheme } from "react-native-paper";
 import Feather from "@expo/vector-icons/Feather";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
+import dateFormatter from "../utils/dateFormatter";
 import type { InstagramPost } from "../_types";
 
 type PostProps = InstagramPost;
@@ -29,7 +30,9 @@ const Post: FC<PostProps> = ({
 }) => {
   const colorScheme = useColorScheme();
   const theme = useTheme();
-  // •
+
+  const date = dateFormatter(createdAt.toString());
+  const [quantity, timeUnit] = date.split(" ");
 
   const darkBorderColor = "#262626";
   const lightBorderColor = "#dbdbdb";
@@ -58,7 +61,7 @@ const Post: FC<PostProps> = ({
         )}
         subtitle={location}
         subtitleStyle={styles.subtitleStyle}
-        title={name}
+        title={`${name} • ${quantity} ${timeUnit[0]}`}
         titleStyle={styles.titleStyle}
       />
       <Card.Content style={{ width: "100%" }}>
