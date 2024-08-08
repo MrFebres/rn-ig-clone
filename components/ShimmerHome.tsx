@@ -1,6 +1,8 @@
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
+import { RefreshControl, StyleSheet, View } from "react-native";
 import { Stack } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "react-native-paper";
 
 import IgLogo from "./IgLogo";
@@ -8,6 +10,13 @@ import ShimmerPost from "./ShimmerPost";
 
 const ShimmerHome = () => {
   const theme = useTheme();
+  const queryClient = useQueryClient();
+
+  const onRefresh = useCallback(() => {
+    queryClient.refetchQueries({ queryKey: ["posts"] });
+  }, []);
+
+  const isRefreshing = Boolean(queryClient.isFetching({ queryKey: ["posts"] }));
 
   const mockData: number[] = Array.from(
     { length: 10 },
@@ -34,6 +43,9 @@ const ShimmerHome = () => {
           data={mockData}
           estimatedItemSize={564}
           keyExtractor={(item) => String(item)}
+          refreshControl={
+            <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
+          }
           renderItem={renderMockItem}
         />
       </View>

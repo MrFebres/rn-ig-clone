@@ -1,6 +1,7 @@
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
+import { RefreshControl, StyleSheet, View } from "react-native";
 import { Stack } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "react-native-paper";
 
@@ -13,18 +14,22 @@ import type { InstagramPost } from "../_types";
 export default function HomeScreen() {
   const theme = useTheme();
 
-  const { data, isLoading } = useQuery<InstagramPost[]>({
+  const { data, isLoading, isRefetching, refetch } = useQuery<InstagramPost[]>({
     queryFn: () => apiFetch("GET", "posts"),
     queryKey: ["posts"],
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 
+  const onRefresh = useCallback(() => {
+    refetch();
+  }, []);
+
   const renderItem: ListRenderItem<InstagramPost> | null | undefined = ({
     item,
   }) => <Post {...item} />;
 
-  if (isLoading) return <ShimmerHome />;
+  if (isLoading || isRefetching) return <ShimmerHome />;
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
@@ -39,6 +44,9 @@ export default function HomeScreen() {
           data={data}
           estimatedItemSize={564}
           keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl onRefresh={onRefresh} refreshing={isRefetching} />
+          }
           renderItem={renderItem}
         />
       </View>
