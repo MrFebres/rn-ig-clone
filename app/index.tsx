@@ -1,13 +1,14 @@
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { Stack } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
 import { apiFetch } from "../services/api";
 import IgLogo from "../components/IgLogo";
 import Post from "../components/Post";
 import type { InstagramPost } from "../_types";
+import ShimmerPost from "../components/ShimmerPost";
 
 export default function HomeScreen() {
   const theme = useTheme();
@@ -24,7 +25,42 @@ export default function HomeScreen() {
     item,
   }) => <Post {...item} />;
 
-  if (isLoading) return <ActivityIndicator />;
+  const renderMockItem: ListRenderItem<unknown> | null | undefined = ({
+    item,
+  }) => (
+    <ShimmerPost
+      backgroundColor={theme.colors.onSurfaceVariant}
+      foregroundColor={theme.colors.onSurface}
+    />
+  );
+
+  if (!isLoading) {
+    const mockData: number[] = Array.from(
+      { length: 10 },
+      (_, index) => index + 1
+    );
+
+    return (
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.surface }]}
+      >
+        <Stack.Screen
+          options={{
+            headerStyle: { backgroundColor: theme.colors.surface },
+            headerTitle: () => <IgLogo color={theme.colors.onSurface} />,
+          }}
+        />
+        <View style={{ flex: 1, height: "100%", width: "100%" }}>
+          <FlashList
+            data={mockData}
+            estimatedItemSize={564}
+            keyExtractor={(item) => String(item)}
+            renderItem={renderMockItem}
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
